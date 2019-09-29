@@ -11,7 +11,7 @@ const drawGroupProperties = (groupProperties: IGroupProperties) => {
         <ul>
             {Object.keys(groupProperties)
                 .map((property: string) => {
-                    return (<li key={property}>{groupProperties[property]}</li>);
+                    return (<li key={property}>{property}: {groupProperties[property]}</li>);
                 })}
         </ul>
     );

@@ -8,10 +8,10 @@ import IPolyline from '../../DataTypes/IPolyline';
 import IPolygon from '../../DataTypes/IPolygon';
 
 interface ISearchData {
-    checkAddress: {text: string, coordinates: {lat: number | null, lon: number | null}};
-    targetAddress: {text: string, coordinates: {lat: number | null, lon: number | null}};
+    checkAddress: { text: string, coordinates: { lat: number | null, lon: number | null } };
+    targetAddress: { text: string, coordinates: { lat: number | null, lon: number | null } };
     servicesToDisplay: string[];
-    otherOptions: {[optionName: string]: boolean | string | null}
+    otherOptions: { [optionName: string]: boolean | string | null }
 }
 
 interface ComponentState {
@@ -66,7 +66,7 @@ export default class SearchForm extends React.Component<ExpectedProps, Component
 
     private handleOnAddressChange(
         addressType: string,
-        value: {text: string, coordinates: {lat: number, lon: number}},
+        value: { text: string, coordinates: { lat: number, lon: number } },
     ): void {
         switch (addressType) {
             case this.checkAddressInputName:
@@ -113,7 +113,7 @@ export default class SearchForm extends React.Component<ExpectedProps, Component
         });
     }
 
-    private handleOnChangeMoreOptions(event: {target: {checked: boolean}}) {
+    private handleOnChangeMoreOptions(event: { target: { checked: boolean } }) {
         const { target } = event;
         const { checked } = target;
 
@@ -122,86 +122,26 @@ export default class SearchForm extends React.Component<ExpectedProps, Component
         }));
     }
 
-    private handleOnSubmit(event: {preventDefault: CallableFunction}) {
+    private handleOnSubmit(event: { preventDefault: CallableFunction }) {
         const { onSearchResultsReceived } = this.props;
         const { searchData } = this.state;
 
-        // const params: {[paramName: string]: number | null} = {
-        //     checkAddressLat: searchData.checkAddress.coordinates.lat,
-        //     checkAddressLon: searchData.checkAddress.coordinates.lon,
-        //     targetAddressLat: searchData.targetAddress.coordinates.lat,
-        //     targetAddressLon: searchData.targetAddress.coordinates.lon,
-        // };
+        const params: { [paramName: string]: number | null } = {
+            checkAddressLat: searchData.checkAddress.coordinates.lat,
+            checkAddressLon: searchData.checkAddress.coordinates.lon,
+            targetAddressLat: searchData.targetAddress.coordinates.lat,
+            targetAddressLon: searchData.targetAddress.coordinates.lon,
+        };
 
         onSearchResultsReceived(
             searchData.checkAddress,
             searchData.targetAddress,
-            Promise.resolve({
-                results: [
-                    {
-                        'Group 1': {
-                            'Information 11': 'value 11',
-                            'Information 12': 'value 12',
-                            'Information 13': 'value 13',
-                        },
-                    },
-                    {
-                        'Group 2': {
-                            'Information 21': 'value 21',
-                            'Information 22': 'value 22',
-                            'Information 23': 'value 23',
-                        },
-                    },
-                ],
-                drawable: [
-                    {
-                        type: 'Circle',
-                        lat: 60.20,
-                        lon: 24.95,
-                        color: 'blue',
-                        popup: 'Dummy text',
-                        tooltip: 'Dummy tooltip',
-                        radius: 500,
-                    } as ICircle,
-                    {
-                        type: 'CircleMarker',
-                        lat: 60.19,
-                        lon: 24.97,
-                        fillColor: 'red',
-                        popup: 'Dummy text',
-                        tooltip: 'Dummy tooltip',
-                        radius: 10,
-                    } as ICircleMarker,
-                    {
-                        type: 'Marker',
-                        lat: 60.21,
-                        lon: 24.96,
-                        popup: 'Dummy text',
-                        tooltip: 'Dummy tooltip',
-                        radius: 500,
-                    } as IMarker,
-                    {
-                        type: 'Polyline',
-                        coordinates: [[60.31, 25], [60.31, 24.99], [60.33, 24.99]],
-                        color: 'orange',
-                        popup: 'Dummy text',
-                        tooltip: 'Dummy tooltip',
-                    } as IPolyline,
-                    {
-                        type: 'Polygon',
-                        coordinates: [[60.3, 25.1], [60.3, 25.12], [60.32, 25.12]],
-                        color: 'purple',
-                        popup: 'Dummy text',
-                        tooltip: 'Dummy tooltip',
-                    } as IPolygon,
-                ],
-            }),
-            // fetch('https://jsonplaceholder.typicode.com/todos?'
-            //     + `${Object.keys(params)
-            //         .map((paramName: string) => `${paramName}=${params[paramName]}`)
-            //         .join('&')}`)
-            //     .then(response => response.json())
-            //     .then(json => json),
+            fetch('http://localhost:3000/api/search?'
+                + `${Object.keys(params)
+                    .map((paramName: string) => `${paramName}=${params[paramName]}`)
+                    .join('&')}`)
+                .then(response => response.json())
+                .then(json => json),
         );
         event.preventDefault();
     }
